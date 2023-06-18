@@ -9,7 +9,7 @@ exports.handler = async function (event,context) {
         const username = body.sender.login;
         const userUrl = body.sender.url
         const avatarUrl = body.sender.avatar_url;
-        let Title
+        let Title = ""
         let issueUrl 
         let issueTitle
         let issueDescription 
@@ -61,20 +61,23 @@ exports.handler = async function (event,context) {
           Title = `Pull request closed ❌ Title: ${pullTitle}, Description: ${pullDescription}, Pull request url: ${pullUrl}`
         }
 
-        const res = await axios.post(process.env.DISCORD_WEBHOOK_URL, {
-          content: `${Title} by ${username} and the repo url is ${repoUrl}`,
-          embeds: [{
-            "title": `${username}`,
-            "description": `Link of the user ${userUrl}`,
-            "image": {
-              "url": `${avatarUrl}`
-            }
-          }],
-        });
-        console.log("Submitted!");
-        return {
-          statusCode: 204,
-        };
+        if(!Title){
+          const res = await axios.post(process.env.DISCORD_WEBHOOK_URL, {
+            content: `${Title} by ${username} and the repo url is ${repoUrl}`,
+            embeds: [{
+              "title": `${username}`,
+              "description": `Link of the user ${userUrl}`,
+              "image": {
+                "url": `${avatarUrl}`
+              }
+            }],
+          });
+          console.log("Submitted!");
+          return {
+            statusCode: 204,
+          };
+        }
+        
       } catch (err) {
         return { statusCode: 500, body: err.toString() };
       }
