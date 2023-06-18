@@ -22,9 +22,9 @@ exports.handler = async function (event,context) {
           Title = `${repoName} is starred ⭐⭐⭐`
         }
         //! TODO if star is removed
-        // else{
-        //   Title = `star is removed from the repo ${repoName}`
-        // }
+        if(action === "deleted" && body.starred_at == null){
+          Title = `star is removed from the repo ${repoName}`
+        }
         // if issue is opened
         if(action === "opened" && body.issue){
           issueUrl = body.issue.html_url
