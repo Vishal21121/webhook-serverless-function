@@ -10,18 +10,20 @@ exports.handler = async function (event,context) {
         const userUrl = body.sender.url
         const avatarUrl = body.sender.avatar_url;
         let Title = ""
-        let issueUrl 
-        let issueTitle
-        let issueDescription 
-        let pullUrl 
-        let pullTitle
-        let pullDescription
+        let issueUrl = ""
+        let issueTitle = ""
+        let issueDescription = ""
+        let pullUrl = ""
+        let pullTitle = ""
+        let pullDescription = ""
+        let assignees = ""
+        let embed = true
+
         
         // if repo is starred
         if(action === 'created' && body.starred_at){
           Title = `${repoName} is starred ⭐⭐⭐`
         }
-        //! TODO if star is removed
         if(action === "deleted" && body.starred_at == null){
           Title = `star is removed from the repo ${repoName}`
         }
@@ -40,6 +42,17 @@ exports.handler = async function (event,context) {
           issueTitle = body.issue.title
           issueDescription = body.issue.body ? body.issue.body : "not provided" 
           Title = `🚩Issue has been closed in the ${repoName}.Issue title: ${issueTitle}, Issue description: ${issueDescription}, Issue url: ${issueUrl}`
+        }
+        else if(action ==="assigned" && body.issue){
+            issueTitle = body.issue.title
+            issueUrl = body.issue.html_url
+            repoUrl = body.issue.repository_url
+            let assignArr = body.issue.assignees.map(({login}) =>{
+                    return login
+            })
+            assignees = assignArr.join(",")
+            Title = `🚩Issue ${issueTitle} is assigned to ${assignees}, Issue url: ${issueUrl} assigned`
+            embed = false
         }
         // if repo is forked
         if (body.forkee){
@@ -64,13 +77,13 @@ exports.handler = async function (event,context) {
         if(Title){
           const res = await axios.post(process.env.DISCORD_WEBHOOK_URL, {
             content: `${Title} by ${username} and the repo url is ${repoUrl}`,
-            embeds: [{
+            embeds: embed ? [{
               "title": `${username}`,
               "description": `Link of the user ${userUrl}`,
               "image": {
                 "url": `${avatarUrl}`
               }
-            }],
+            }] : null
           });
           console.log("Submitted!");
           return {
