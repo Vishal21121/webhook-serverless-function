@@ -61,7 +61,7 @@ exports.handler = async function (event,context) {
           Title = `Pull request closed ❌ Title: ${pullTitle}, Description: ${pullDescription}, Pull request url: ${pullUrl}`
         }
 
-        if(!Title){
+        if(Title){
           const res = await axios.post(process.env.DISCORD_WEBHOOK_URL, {
             content: `${Title} by ${username} and the repo url is ${repoUrl}`,
             embeds: [{
