@@ -1,6 +1,6 @@
 # Webhook Serverless Function
 
-This repository contains a serverless function that can be deployed on Netlify to act as a handler for GitHub webhooks. The function receives events sent by the GitHub webhook and creates a pull request to send a message to Discord in the appropriate channel.
+This repository contains a serverless function that can be deployed on Netlify to act as a handler for GitHub webhooks. The function receives events sent by the GitHub webhook and creates a post request to send a message to Discord in the appropriate channel.
 
 # Setup
 To use this serverless function, follow the steps below:
